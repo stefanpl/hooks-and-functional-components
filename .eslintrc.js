@@ -2,6 +2,9 @@ module.exports = {
   extends: ["auto"],
   rules: {
     "simple-import-sort/imports": "off",
+    "react/destructuring-assignment": "off",
+    "unicorn/no-array-callback-reference": "off",
+    "unicorn/no-array-reduce": "off",
   },
   overrides: [
     {
