@@ -1,0 +1,69 @@
+{
+  "folders": [
+    {
+      "path": "./.."
+    }
+  ],
+  "settings": {
+    "workbench.colorCustomizations": {
+      "activityBar.background": "#000000",
+      "activityBar.foreground": "#ff1be4",
+      "activityBar.inactiveForeground": "#ff1be475"
+    },
+    "css.validate": false,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.useTabStops": false,
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact"
+    ],
+    "eslint.workingDirectories": [
+      {
+        "mode": "auto"
+      }
+    ],
+    "html.format.endWithNewline": true,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "less.validate": false,
+    "scss.validate": true,
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+      "source.addMissingImports": true,
+      "source.organizeImports": true
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "files.associations": {
+      "Dockerfile-*": "dockerfile",
+      "*.env.example": "env",
+      "*.js.example": "javascript",
+      "*.html.erb": "html"
+    },
+    "files.exclude": {
+      "node_modules/": false
+    },
+    "search.useIgnoreFiles": false,
+    "search.useGlobalIgnoreFiles": false,
+    "search.exclude": {
+      "node_modules/": true
+    },
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "git.ignoreLimitWarning": true
+  }
+}

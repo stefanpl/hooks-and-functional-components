@@ -1,0 +1,12 @@
+{
+  "name": "NVON Functional Component without viewModel",
+  "variables": [
+    {
+      "name": "componentName",
+      "style": {
+        "case": "camelCase",
+        "keepUpperCase": "true"
+      }
+    }
+  ]
+}
