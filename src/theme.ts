@@ -26,8 +26,6 @@ const themeWithOverrides: Theme = {
     ...theme.overrides,
     MuiTypography: {
       h1: {
-        fontSize: "3rem",
-        fontWeight: "bold",
         color: theme.palette.primary.main,
         margin: "3rem 0 0 0",
       },

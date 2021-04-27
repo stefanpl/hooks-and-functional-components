@@ -1,9 +1,8 @@
 import React, { ReactElement } from "react";
 import { TCAppRoutes } from "./routeInterfaces";
 
-const HomePage = React.lazy(() => import("../pages/HomePage"));
-const AnotherPage = React.lazy(() => import("../pages/AnotherPage"));
-const LeThirdPage = React.lazy(() => import("../pages/AnotherPage"));
+const HomePage = React.lazy(() => import("../pages/01-WelcomePage"));
+const FunctionIntroPage = React.lazy(() => import("../pages/02-FunctionIntro"));
 
 /**
  * Each route renders a given component.
@@ -11,8 +10,7 @@ const LeThirdPage = React.lazy(() => import("../pages/AnotherPage"));
  */
 const componentsForRoutes: Record<TCAppRoutes, ReactElement> = {
   [TCAppRoutes.Welcome]: <HomePage />,
-  [TCAppRoutes.Another]: <AnotherPage />,
-  [TCAppRoutes.LeThird]: <LeThirdPage />,
+  [TCAppRoutes.FunctionIntro]: <FunctionIntroPage />,
 };
 
 export default componentsForRoutes;

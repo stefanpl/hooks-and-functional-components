@@ -1,7 +1,6 @@
 export enum TCAppRoutes {
   "Welcome" = "Welcome",
-  "Another" = "Another",
-  "LeThird" = "Le Third Page",
+  "FunctionIntro" = "FunctionIntro",
 }
 
 export interface TCRouterHistory {
@@ -15,5 +14,7 @@ export interface BackButton {
 
 export interface TCRoute {
   path: string;
+  name: string;
+  isIndented?: true;
   needsAnId?: true;
 }

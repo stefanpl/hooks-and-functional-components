@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import React, { ReactElement, useMemo } from "react";
 import { TCAppRoutes } from "../../routes/routeInterfaces";
+import routes from "../../routes/routes";
 import useNavigate from "../../routes/useNavigate";
 
 export const drawerWidth = 240;
@@ -32,19 +33,17 @@ const Navigation: React.FunctionComponent = () => {
   const classes = useNavigationStyles();
   const navigate = useNavigate();
 
-  console.log(Object.entries(TCAppRoutes));
-
   const navItems = useMemo(
     () =>
-      Object.entries(TCAppRoutes).map(
-        ([route, routeName]): ReactElement => (
+      Object.entries(routes).map(
+        ([route, data]): ReactElement => (
           <ListItem
             className={classes.navItem}
-            onClick={() => navigate(routeName)}
+            onClick={() => navigate(route as TCAppRoutes)}
             button
             key={route}
           >
-            {routeName}
+            {data.name}
           </ListItem>
         )
       ),

@@ -8,8 +8,9 @@ const useNavigate = (): ((route: TCAppRoutes) => void) => {
   const history = useHistory();
   const location = useTCLocation();
   return useCallback(
-    (route: TCAppRoutes, id?: number) =>
-      history.push(path(route, id), reactRouterStateFromLocation(location)),
+    (route: TCAppRoutes, id?: number) => {
+      history.push(path(route, id), reactRouterStateFromLocation(location));
+    },
     [history, location]
   );
 };
