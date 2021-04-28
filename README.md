@@ -134,3 +134,7 @@ const MyComponent3: FunctionComponent<SomethingWithAName> = (props) => (
 - … and rendered again
 - … and again
 - The component gets unmounted.
+
+function body gets called twice!
+"But I certainly understand that the first time you discover this behavior, it's perplexing."
+https://github.com/facebook/react/issues/20090#issuecomment-715926549
