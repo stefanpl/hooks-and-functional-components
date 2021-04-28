@@ -1,10 +1,10 @@
 import { Box, Typography } from "@material-ui/core";
 import React, { ReactElement } from "react";
 
-const animated = (icon: string): ReactElement => (
+export const animated = (icon: string): ReactElement => (
   <i
     style={{ display: "inline-block" }}
-    className="animate__animated animate__slideInDown"
+    className="animate__animated animate__bounceIn"
   >
     {icon}
   </i>
@@ -24,7 +24,7 @@ const WelcomePage: React.FunctionComponent = () => {
 
       <Box>
         <Typography variant="h2">Agenda</Typography>
-        <Typography variant="body1">
+        <Typography variant="body1" component="div">
           <ul>
             <li>what is a function component, and why should we use them</li>
             <li>

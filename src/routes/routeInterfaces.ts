@@ -1,6 +1,7 @@
 export enum TCAppRoutes {
   "Welcome" = "Welcome",
   "FunctionIntro" = "FunctionIntro",
+  "Playground" = "Playground",
 }
 
 export interface TCRouterHistory {

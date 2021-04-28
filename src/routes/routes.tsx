@@ -16,6 +16,10 @@ const routes: RouteMap = {
     path: "/functionIntro",
     name: "Function Components",
   },
+  [TCAppRoutes.Playground]: {
+    path: "/playground",
+    name: "Playground",
+  },
 };
 
 export default routes;

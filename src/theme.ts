@@ -32,9 +32,13 @@ const themeWithOverrides: Theme = {
       subtitle1: {
         fontSize: "1.5rem",
         marginBottom: "2rem",
+        marginTop: "1rem",
       },
       body1: {
         fontSize: "18px",
+      },
+      h2: {
+        margin: theme.spacing(25, 0, 5),
       },
     },
     MuiButton: {

@@ -1,46 +1,95 @@
-# Getting Started with Create React App
+# React hooks and function components
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- this project has been created using [create-react-app](https://create-react-app.dev/) using a [TypeScript template](https://create-react-app.dev/docs/adding-typescript/)
+- I ran `npm run eject` ("stuff can break") so we see a bit more
+- during setup I discovered [eslint-config-auto](https://github.com/davidjbradshaw/eslint-config-auto). Pretty nice, if you're into linters.
 
-## Available Scripts
+## Let's have a look on how this all works (roughly)
 
-In the project directory, you can run:
+- an application entry point is defined in the webpack config. It's `src/index.tsx`. webpack's journey starts here, we mostly don't care.
+- whenever you call some `npm run` thingy,
+- `index.tsx` loads `app.tsx`, which is our entry point to the application (you could rename it, of course … but why?).
+- **at build time**, webpack (leveraging most notably [babel](https://babeljs.io/) and TypeScript plugins) transforms our code into browser-understandable JavaScript:
 
-### `yarn start`
+  - no more types (TypeScript's job)
+  - no more fancy ES6 stuff (babel's job)
+  - **no more JSX (babel's job)**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- at runtime, react starts on it's way by means of `ReactDOM.render` (from `index.tsx`, remember?).
+- JSX will be [compiled to something (JavaScript, of course) that react understands and knows how to handle](https://reactjs.org/docs/introducing-jsx.html#jsx-represents-objects). This is what's called a **React element**.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## So where do function components come into play?
 
-### `yarn test`
+- a function component is a piece of code that will **return a React Element** (e.g. a JSX-runtime-equivalent) when being called:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```typescript
+type SimpleFunctionComponent = () => ReactElement;
 
-### `yarn build`
+const MyComponent: SimpleFunctionComponent = () => <h1>hello 🌍</h1>;
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+function JustAnotherWayOfWritingIt(): ReactElement {
+  return <h1>hello 🌍</h1>;
+}
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Before we get any deeper – why use function components?
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- [From the react docs](https://reactjs.org/docs/hooks-faq.html#should-i-use-hooks-classes-or-a-mix-of-both): "When you’re ready, we’d encourage you to start trying Hooks in new components you write."
+- ["Classes confuse both people and machines"](https://reactjs.org/docs/hooks-intro.html#classes-confuse-both-people-and-machines). Hell yes.
+- React hooks make it easy to share functionality between components. We'll get to this later.
 
-### `yarn eject`
+<img src="https://staticfiles.nvon.com/js-classes.jpg" alt="JavaScript classes" />
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### So … it's "just" a plain JS function! Store it, pass it around, do whatever you like
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```typescript
+const MyComponent: SimpleFunctionComponent = () => <h1>hello 🌍</h1>;
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+const componentWithMetaInformation = {
+  theComponent: MyComponent,
+  description: "A very stupid hello world component",
+  tags: ["stupid", "hello world", "examples are hard"],
+};
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+You can even call it directly using good ol' `()`, but that'll trick react to a certain extent. If you can, avoid this.
 
-## Learn More
+```typescript
+return componentWithMetaInformation.theComponent();
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+One last example to underline the dynamic nature and endless possibilities you have with functions:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```typescript
+/**
+ * A function taking an input (an emoji, preferrably) and returning another function.
+ *
+ * If you want to sound fancy, you can call this a "higher-order function".
+ */
+function createEmojiComponent(emoji: string): FunctionComponent {
+  return () => <h1>Hello {emoji}</h1>;
+}
+
+const MyUnicornComponent = createEmojiComponent("🦄");
+
+const theWholeGang = ["🐳", "🦄", "🐒", "🦈"].map(createEmojiComponent);
+
+// …
+<>
+  <MyUnicornComponent />
+  {theWholeGang.map((Member) => (
+    <Member />
+  ))}
+</>;
+{
+  theWholeGang.map((Member) => <Member />);
+}
+```
+
+## The lifecycle of a component
+
+- The component gets mounted.
+- The component gets rendered
+- … and rendered again
+- … and again
+- The component gets unmounted.
