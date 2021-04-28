@@ -86,6 +86,47 @@ const theWholeGang = ["🐳", "🦄", "🐒", "🦈"].map(createEmojiComponent);
 }
 ```
 
+## Functions can accept arguments. In the component world, we call them `props`
+
+```typescript
+/**
+ * The most simple case. TS will scream.
+ */
+const MyComponent = (props) => <h1>hello {props.name}</h1>;
+```
+
+Let's make TS happy:
+
+```typescript
+/**
+ * Same thing, but no red squiggly and hints at the callsite 🎉
+ */
+const MyComponent1 = (props: { name: string }): ReactElement => (
+  <h1>hello {props.name}</h1>
+);
+
+/**
+ * Let's use the types that react gives us! `props` is now aware of `children`!
+ */
+const MyComponent2: FunctionComponent<{ name: string }> = (props) => (
+  <h1>hello {props.name}</h1>
+);
+
+/**
+ * Let's actually be explicit about our interface! (no changes in functionality)
+ * This is (currently) the NVON-preferred way of defining functional components.
+ */
+interface SomethingWithAName {
+  name: string;
+}
+
+const MyComponent3: FunctionComponent<SomethingWithAName> = (props) => (
+  <h1>hello {props.name}</h1>
+);
+```
+
+- React by default passes a `children` prop to our components. Its of the type `ReactElement`.
+
 ## The lifecycle of a component
 
 - The component gets mounted.
