@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { CSSProperties, useEffect, useRef } from "react";
 
 export interface SideEffectyProps {
   name: string;
@@ -6,9 +6,7 @@ export interface SideEffectyProps {
   someNumber: number;
   aFunction: () => void;
   friends: string[];
-  nestedObject: {
-    anotherName: string;
-  };
+  style: CSSProperties;
 }
 
 const animationClass = "animate__animated animate__shakeX";
@@ -19,8 +17,8 @@ const seProps: SideEffectyProps = {
   someNumber: 100,
   isItReallyTrue: true,
   name: "effecty",
-  nestedObject: {
-    anotherName: "nesty",
+  style: {
+    backgroundColor: "black",
   },
 };
 
@@ -34,7 +32,7 @@ const SideEffecty: React.FunctionComponent<SideEffectyProps> = (
     someNumber,
     aFunction,
     friends,
-    nestedObject,
+    style,
     isItReallyTrue,
   } = props;
 
@@ -47,7 +45,7 @@ const SideEffecty: React.FunctionComponent<SideEffectyProps> = (
         refObj.current.classList.add(...animationClass.split(" "));
       }
     });
-  }, [name, someNumber, aFunction, friends, nestedObject, isItReallyTrue]);
+  }, [name, someNumber, aFunction, friends, style, isItReallyTrue]);
 
   return (
     <h1 ref={refObj} className="animate__animated animate__shakeX">
