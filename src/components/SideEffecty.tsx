@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { CSSProperties, useEffect, useRef } from "react";
 
 export interface SideEffectyProps {
@@ -9,9 +10,9 @@ export interface SideEffectyProps {
   style: CSSProperties;
 }
 
-const animationClass = "animate__animated animate__shakeX";
+const animationClasses = ["animate__animated", "animate__shakeX"];
 
-const seProps: SideEffectyProps = {
+export const seProps: SideEffectyProps = {
   aFunction: () => {},
   friends: ["🐳", "🦄", "🐒", "🦈"],
   someNumber: 100,
@@ -27,28 +28,21 @@ const SideEffecty: React.FunctionComponent<SideEffectyProps> = (
 ) => {
   console.log(`effecty rendering`);
   const refObj = useRef<HTMLHeadingElement>(null);
-  const {
-    name,
-    someNumber,
-    aFunction,
-    friends,
-    style,
-    isItReallyTrue,
-  } = props;
+  const { name, someNumber, aFunction, friends, style, isItReallyTrue } = props;
 
   useEffect(() => {
     if (refObj.current) {
-      refObj.current.classList.remove(...animationClass.split(" "));
+      refObj.current.classList.remove(...animationClasses);
     }
     setTimeout(() => {
       if (refObj.current) {
-        refObj.current.classList.add(...animationClass.split(" "));
+        refObj.current.classList.add(...animationClasses);
       }
-    });
+    }, 50);
   }, [name, someNumber, aFunction, friends, style, isItReallyTrue]);
 
   return (
-    <h1 ref={refObj} className="animate__animated animate__shakeX">
+    <h1 ref={refObj} className={clsx(animationClasses)}>
       Much side effect
     </h1>
   );
