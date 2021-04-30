@@ -236,7 +236,7 @@ If you're hooked to FP, have a look [here](https://github.com/MostlyAdequate/mos
 
 <h2 style="margin-top: 20rem;">A quick disclaimer: react strict mode and function components</h2>
 
-The function body of our function gets called twice in strict mode. This is to "discover [**detecting unexpected effects**"](https://reactjs.org/docs/strict-mode.html#detecting-unexpected-side-effects) (cool, we know what that is now 😊). Also, from react 17 on, console methods are not called twice.
+The **function body of our function gets called twice in strict mode**. This is to "discover [**detecting unexpected effects**"](https://reactjs.org/docs/strict-mode.html#detecting-unexpected-side-effects) (cool, we know what that is now 😊). Also, from react 17 on, console methods are not called twice.
 
 ["… I certainly understand that the first time you discover this behavior, it's perplexing."](https://github.com/facebook/react/issues/20090#issuecomment-715926549)
 
@@ -252,10 +252,204 @@ const { log } = console;
 
 Since side effects are also very handy, we'll find a way to use (hehe) them eventually.
 
-## The lifecycle of a component
+<h2 style="margin-top: 20rem;">useState</h2>
 
-- The component gets mounted.
-- The component gets rendered
-- … and rendered again
-- … and again
-- The component gets unmounted.
+- Use it when a component maintains its own state. (If the state is controlled from the outside, use props).
+- Use the generic arguments to be explicit about the type: `useEffect<ThisIsTheDroidYoureLookingFor>();`
+- The default syntax to use it is a form of [array destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#array_destructuring). You'll want to use it.
+- You can pass an initial value, or an initializer function. **Attention**: the initializer will be called twice in strice mode, too!
+- Be careful about using props as initial values. This is mostly not want the component user expects.
+- Setting a new state can be done by passing a value directly or through a callback. Callbacks make for nice sharable setters!
+
+```typescript
+/**
+ * Simple initial value.
+ */
+const [isTurnedOn, setTurnedOn] = useState<boolean>(true);
+
+/**
+ * Using an initializer function. Must return a boolean.
+ */
+const [isTurnedOn, setTurnedOn] = useState<boolean>(() => {
+  (function someReallyComplexInitializerLogic() {})();
+  return true;
+});
+
+/**
+ * Changing with a value directly
+ */
+const switchOff = setTurnedOn(false);
+
+/**
+ * Using the current state as a variable
+ */
+setTurnedOn(!isTurnedOn);
+
+/**
+ * Using the current state as a callback with a function declaration
+ */
+setTurnedOn(function toggle(currentState) {
+  return !currentState;
+});
+
+/**
+ * Using the current state as a callback with an arrow function
+ */
+setTurnedOn((currentState) => !currentState);
+```
+
+<h2 style="margin-top: 20rem;">useEffect</h2>
+
+- this is **the place** to handle side effects.
+- accepts two things: an `EffectCallback` and a `DependencyList`.
+- `EffectCallback` gets called whenever at least one element of the `DependencyList` changes – at least once, on mount.
+- the effect gets called asynchronously after the DOM has been rendered. Because performance.
+- an empty `DependencyList` will cause the `EffectCallback` to run only once – on mount!
+
+Let's give our light bulb a little side effect:
+
+```typescript
+function effectCallback(): void {
+  window.document.title = `The light is now ${isTurnedOn ? "on" : "off"}`;
+}
+
+useEffect(effectCallback, [isTurnedOn]);
+```
+
+Pretty neat! Let's have a quick look to be sure about the double-calling …
+
+What if we unmount the lightbulb?
+
+- the `EffectCallback` function can return a `Destructor` function: this is a cleanup function that gets called when the component unmounts.
+- (if you're now thinking … "wait! a function returning another function … what was the fancy word for that again?" – yup, `EffectCallback` can be a _higher order function_)
+
+```typescript
+function destructorFunction(): void {
+  window.document.title = "The light bulb is gone";
+}
+
+function effectCallback(): () => void {
+  window.document.title = `The light is now ${isTurnedOn ? "on" : "off"}`;
+  return destructorFunction;
+}
+
+useEffect(effectCallback, [isTurnedOn]);
+```
+
+<h2 style="margin-top: 20rem;">The lifecycle of a component</h2>
+
+- **The component gets mounted.** We care about this. There is likely some work to be done:
+  - fetch data from APIs
+  - subscribe to events
+  - manipulate state
+- **The component gets rendered. And rendered. And rendered.** We shouldn't care:
+  - Our side effects should not happen on render
+  - Think data-driven! Changes in your data should cause side effects. That's the mental model behind the `DependencyList`
+- **The component gets unmounted.** We care about this in case we need to clean up 🧹
+  - unsubscribe from events
+  - cancel timeouts/intervals
+  - restore state
+
+<h2 style="margin-top: 20rem;">useRef</h2>
+
+- flexible container for storing mutable values inside function components
+- changing a ref does not re-render the component!
+- often used for DOM references, but not limited to that
+
+Let's make our lightbulb's cleanup a bit more useful:
+
+- on mount, read the page title and store it in a ref.
+- un unmount, read from the ref and restore it.
+
+```typescript
+const initialPageTitle = useRef<string>("");
+
+function destructorFunction(): void {
+  window.document.title = initialPageTitle.current;
+}
+
+function effectCallbackForHandlingInitialTitle(): () => void {
+  initialPageTitle.current = window.document.title;
+  return destructorFunction;
+}
+
+useEffect(effectCallbackForHandlingInitialTitle, []);
+```
+
+<h2 style="margin-top: 20rem;">custom hooks</h2>
+
+There are a few [rules to follow when using hooks](https://reactjs.org/docs/hooks-rules.html). Let's have a look at them:
+
+- Don’t call Hooks inside loops, conditions (or after early returns), or nested functions.
+
+  - sometimes a bit frustrating, but you'll get used to it
+  - eslint is here for us
+
+- Only call hooks inside function components, or custom hooks.
+
+With those in mind, let's write our first custom hook!
+
+A function that modifies the page might wish to restore the title when it gets unmounted. This is not limited to our lightbulb! Let's make the functionality sharable!
+
+```typescript
+import { useEffect, useRef } from "react";
+
+const useRestoreTitleOnUnmount = (): void => {
+  const initialPageTitle = useRef<string>();
+
+  function destructorFunction(): void {
+    if (initialPageTitle.current) {
+      window.document.title = initialPageTitle.current;
+    }
+  }
+
+  function effectCallbackForHandlingInitialTitle(): () => void {
+    initialPageTitle.current = window.document.title;
+    return destructorFunction;
+  }
+
+  useEffect(effectCallbackForHandlingInitialTitle, []);
+};
+
+export default useRestoreTitleOnUnmount;
+```
+
+**This is what makes hooks so powerful: You can easily share functionality that spans the entire lifecycle of a component!**
+
+We can also use hooks to put our logic in one central place, and keep it separate from the template code. At NVON, we call these kinds of hooks `ViewModel`. Let's write one for our Lightbulb!
+
+```typescript
+const useLightBulbViewModel = (): {
+  style: CSSProperties;
+  toggleLightbulb: () => void;
+} => {
+  const [isTurnedOn, setTurnedOn] = useState<boolean>(true);
+  useRestoreTitleOnUnmount();
+
+  useEffect(() => {
+    window.document.title = `The light is now ${isTurnedOn ? "on" : "off"}`;
+  }, [isTurnedOn]);
+
+  return {
+    style: {
+      backgroundColor: isTurnedOn ? "yellow" : "black",
+      width: 100,
+      height: 100,
+      borderRadius: "50%",
+    },
+    toggleLightbulb: () => setTurnedOn(toggle),
+  };
+};
+
+const LightBulb: FunctionComponent = () => {
+  const { style, toggleLightbulb } = useLightBulbViewModel();
+  return (
+    <>
+      <Box style={style} />
+      <Button onClick={toggleLightbulb}>toggle light</Button>
+    </>
+  );
+};
+```
+
+Look at how clean the `const LightBulb: FunctionComponent` definition is now 🎉.
