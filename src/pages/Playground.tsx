@@ -1,16 +1,14 @@
 import { Box, Button } from "@material-ui/core";
 import React, { FunctionComponent, useState } from "react";
 
-const { log } = console;
-
-function sideEffect(name: string): void {
-  log("I am a side effect!!", name);
-}
+let counter = 0;
 
 const LightBulb: FunctionComponent = () => {
   const [isTurnedOn, setTurnedOn] = useState<boolean>(true);
 
-  sideEffect("function body");
+  counter += 1;
+
+  console.log(`counter is now ${counter}`);
 
   return (
     <>
@@ -24,10 +22,7 @@ const LightBulb: FunctionComponent = () => {
       />
       <Button
         onClick={() => {
-          setTurnedOn((old) => {
-            sideEffect("state setter");
-            return !old;
-          });
+          setTurnedOn((old) => !old);
         }}
       >
         toggle light

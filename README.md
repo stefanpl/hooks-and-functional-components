@@ -81,9 +81,6 @@ const theWholeGang = ["🐳", "🦄", "🐒", "🦈"].map(createEmojiComponent);
     <Member />
   ))}
 </>;
-{
-  theWholeGang.map((Member) => <Member />);
-}
 ```
 
 ## Functions can accept arguments. In the component world, we call them `props`
@@ -127,6 +124,134 @@ const MyComponent3: FunctionComponent<SomethingWithAName> = (props) => (
 
 - React by default passes a `children` prop to our components. Its of the type `ReactElement`.
 
+<h2 style="margin-top: 10rem;">A little warmup for today</h2>
+
+Given this array of numbers …
+
+```typescript
+const numbers = [0, 1, 2, 3];
+```
+
+… try to produce an array `[2, 3]`:
+
+- one time using `Array.prototype.splice`
+- one time using `Array.prototype.slice`
+
+```typescript
+const odds1 = // numbers … and splice … somehow;
+const odds2 = // numbers … and slice … somehow;
+```
+
+<h2 style="margin-top: 20rem;">The most incomplete introduction on Functional Programming concepts you'll ever get</h2>
+
+<img style="margin: 5rem 0;" src="https://staticfiles.nvon.com/go-deeper.jpg" alt="Going deep" />
+
+The react documentation (and a lot of stuff you'll find online) often refers to some of these concepts:
+
+- idempotency
+- side effects
+- pure functions
+
+Let's go over them real quick.
+
+### Idempotency
+
+A function is said to be idempotent when it always returns the same value when it's called with the same input.
+
+`Same input` ➡️ `same output`. Easy as 🍰
+
+Let's look at some functions and discuss their idempotency:
+
+```typescript
+function leOne(someNumber: number, anotherNumber: number): number {
+  if (someNumber * 3 > 100) {
+    return anotherNumber;
+  }
+  return someNumber + anotherNumber;
+}
+
+function leTwo(): Buffer {
+  return readFileSync("/tmp/input.txt");
+}
+
+function leThree(someNumber: number): number {
+  return Math.random() > 0.5 ? someNumber : someNumber * 2;
+}
+
+function leFour(obj: { name: string }): { name: string } {
+  // eslint-disable-next-line no-param-reassign
+  obj.name = "groot";
+  return obj;
+}
+
+function leFive(obj: { name: string }): { name: string } {
+  return {
+    ...obj,
+    name: "🌳",
+  };
+}
+
+const leSix = fetch;
+
+const leSeven = Array.prototype.splice;
+
+const leEight = Array.prototype.slice;
+
+const leNine = _.merge;
+```
+
+### Side effects
+
+The definition here is a bit harder. Let's try two of them:
+
+A side effect is:
+
+- … an observable interaction with the outside world 🌍 👀
+- … anything that is not required to map a certain input to a certain output `A` ➡️ `B`
+
+Examples of side effects:
+
+- logging
+- network requests
+- disk I/O
+- DOM manipulations
+- modifying input variables
+- modifying external state
+- launching rockets
+
+Without side effects, our program is dead ([or is it not?](https://en.wikipedia.org/wiki/Schr%C3%B6dinger%27s_cat)). They are useful and powerful, but at the same time kind of dangerous.
+
+**We want to have as much control over side effects as possible!**
+
+### Pure functions
+
+A pure function has no side effects, and is idempotent. 🍰 again
+
+In functional programming (FP), pure functions are seen as the means to achieving programmer bliss. Our takeaways here:
+
+- it's good to have control over side effects
+- modifying input is (nearly almost) a bad idea
+
+If you're hooked to FP, have a look [here](https://github.com/MostlyAdequate/mostly-adequate-guide). For now, let's get back to our light bulb.
+
+<h2 style="margin-top: 20rem;">A quick disclaimer: react strict mode and function components</h2>
+
+The function body of our function gets called twice in strict mode. This is to "discover [**detecting unexpected effects**"](https://reactjs.org/docs/strict-mode.html#detecting-unexpected-side-effects) (cool, we know what that is now 😊). Also, from react 17 on, console methods are not called twice.
+
+["… I certainly understand that the first time you discover this behavior, it's perplexing."](https://github.com/facebook/react/issues/20090#issuecomment-715926549)
+
+We can use a little helper to get around the everything-twice-loggin-once weirdness:
+
+```typescript
+const { log } = console;
+```
+
+**The key takeaway here: our function component bodies should not contain side effects!**
+
+"Ignoring this rule can lead to a variety of problems, including memory leaks and invalid application state."
+
+Since side effects are also very handy, we'll find a way to use (hehe) them eventually.
+
 ## The lifecycle of a component
 
 - The component gets mounted.
@@ -134,7 +259,3 @@ const MyComponent3: FunctionComponent<SomethingWithAName> = (props) => (
 - … and rendered again
 - … and again
 - The component gets unmounted.
-
-function body gets called twice!
-"But I certainly understand that the first time you discover this behavior, it's perplexing."
-https://github.com/facebook/react/issues/20090#issuecomment-715926549
