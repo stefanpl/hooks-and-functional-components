@@ -9,6 +9,7 @@ module.exports = {
     "unicorn/prefer-regexp-test": "off",
     "no-secrets/no-secrets": "off",
     "no-console": "off",
+    "import/prefer-default-export": "off",
   },
   overrides: [
     {

@@ -138,8 +138,8 @@ const numbers = [0, 1, 2, 3];
 - one time using `Array.prototype.slice`
 
 ```typescript
-const odds1 = // numbers … and splice … somehow;
-const odds2 = // numbers … and slice … somehow;
+const spliced = // numbers … and splice … somehow;
+const sliced = // numbers … and slice … somehow;
 ```
 
 <h2 style="margin-top: 20rem;">The most incomplete introduction on Functional Programming concepts you'll ever get</h2>
