@@ -1,5 +1,14 @@
 # React hooks and function components
 
+## Running this repo
+
+The notes are all contained within this readme. If you want to dabble with the code, this should get you ⬆️ and 🏃‍♀️:
+
+```shell
+npm i
+npm run start
+```
+
 - this project has been created using [create-react-app](https://create-react-app.dev/) using a [TypeScript template](https://create-react-app.dev/docs/adding-typescript/)
 - I ran `npm run eject` ("stuff can break") so we see a bit more
 - during setup I discovered [eslint-config-auto](https://github.com/davidjbradshaw/eslint-config-auto). Pretty nice, if you're into linters.
